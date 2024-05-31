@@ -229,7 +229,7 @@ async function handleTCPOutBound(remoteSocket, remoteAddress, remotePort, payloa
 
 /**
  * @param {Socket} tcpSocket
- * @param {WebSocket} client
+ * @param {WebSocket} webSocket
  * @param {function} retry
  * @param {(string, string) => void} log
  */
@@ -259,6 +259,7 @@ async function tcpSocketToWS(tcpSocket, webSocket, retry, log) {
     retry()
   }
 }
+
 /**
  * @param {WebSocket} webSocket
  * @link https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
