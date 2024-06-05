@@ -57,7 +57,7 @@ function trojanOverWSHandler() {
   /**@type {{value: WritableStream<Uint8Array> | null}} */
   const remoteSocketWrapper = { value: null }
   const writableStream = new WritableStream({
-    async write(chunk) {
+    async write(/**@type {ArrayBuffer}*/ chunk) {
       if (remoteSocketWrapper.value) {
         const writer = remoteSocketWrapper.value.getWriter()
         writer.write(chunk)
@@ -107,7 +107,7 @@ function parseTrojanHeader(chunk) {
 
   const view = new DataView(chunk.slice(58))
   const cmd = view.getUint8(0)
-  if (cmd !== 1) throw new Error('unsupported command, only TCP (CONNECT) is allowed')
+  if (cmd !== 1) throw new Error('Unsupported command, only TCP (CONNECT) is allowed')
 
   const type = view.getUint8(1)
   // Trojan Request Header Format after first CRLF
@@ -130,7 +130,6 @@ function parseTrojanHeader(chunk) {
       break
     case 0x04:
       addressLength = 16
-
       address = Array(8)
         .fill(0)
         .map((_, i) => view.getUint16(2 + i * 2).toString(16))
@@ -152,14 +151,14 @@ function parseTrojanHeader(chunk) {
 }
 
 /**
- * @param {WebSocket} websocket
+ * @param {WebSocket} webSocket
  * @param {(string, string) => void} log
  * @returns {ReadableStream<ArrayBuffer>}
  */
 function makeReadableWebSocketStream(webSocket, log) {
   let cancel = false
   const stream = new ReadableStream({
-    start(controller) {
+    start(/**@type {ReadableStreamController<ArrayBuffer>}*/ controller) {
       webSocket.addEventListener('message', (event) => {
         if (cancel) return
         controller.enqueue(event.data)
